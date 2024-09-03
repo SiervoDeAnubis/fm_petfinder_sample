@@ -1,15 +1,14 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import useBreedList from "../hooks/useBreedList";
 import Results from "./Results";
-import { useQuery } from "@tanstack/react-query";
 import fetchSearch from "../request/fetchSearch";
+import AdoptedPetContext from "./AdoptedPetContext";
 const ANIMALS = ["bird", "cat", "dog", "rabbit", "reptile"];
 
 const SearchParams = () => {
-  //const [location, setLocation] = useState("");
+  const [adoptedPet] = useContext(AdoptedPetContext);
   const [animal, setAnimal] = useState("");
-  //const [breed, setBreed] = useState("");
-  //const [pets, setPets] = useState([]);
   const [requestParams, setRequestParams] = useState({
     location: "",
     animal: "",
@@ -23,24 +22,13 @@ const SearchParams = () => {
 
   const pets = results?.data?.pets ?? [];
 
-  /*useEffect(() => {
-    requestPets();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const requestPets = async () => {
-    const result = await fetch(
-      `http://pets-v2.dev-apis.com/pets?animal=${animal}&location=${location}&breed=${breed}`,
-    );
-    const response = await result.json();
-    setPets(response.pets);
-  };*/
+  console.log(adoptedPet);
 
   return (
     <div className="search-params">
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          //requestPets();
           const formData = new FormData(e.target);
           setRequestParams({
             animal: formData.get("animal") ?? "",
@@ -49,6 +37,11 @@ const SearchParams = () => {
           });
         }}
       >
+        {adoptedPet ? (
+          <div className="pet image-container">
+            <img src={adoptedPet.images[0]} alt={adoptedPet.name} />
+          </div>
+        ) : null}
         <label htmlFor="location">
           Location
           <input name="location" />
